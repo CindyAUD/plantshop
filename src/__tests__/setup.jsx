@@ -6,9 +6,9 @@ afterEach(() => {
 })
 
 global.basePlants = [
-  { id: 1, name: "Aloe", image: "./images/aloe.jpg", price: 15.99 },
+  { id: 1, name: "Aloe Plant", image: "./images/aloe.jpg", price: 15.99 },
   { id: 2, name: "ZZ Plant", image: "./images/zz-plant.jpg", price: 25.98 },
-  { id: 3, name: "Monstera Deliciosa", image: "./images/monstera.jpg", price: 25.99 },
+  { id: 3, name: "Peperomia", image: "./images/monstera.jpg", price: 25.99 },
 ]
 
 global.alternatePlants = [

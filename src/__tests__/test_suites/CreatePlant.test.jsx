@@ -1,59 +1,65 @@
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import App from '../../components/App';
-import '@testing-library/jest-dom';
+import React from 'react'
+import { render, fireEvent, waitFor, screen } from '@testing-library/react'
+import App from '../../components/App'
+import '@testing-library/jest-dom'
 
-describe('2nd Deliverable', () => {
-    test('adds a new plant when the form is submitted', async () => {
-        global.setFetchResponse(global.basePlants)
-        const { getByPlaceholderText, findByText, getByText } = render(<App />)
+const basePlants = [
+  { id: '1', name: 'Aloe', image: './images/aloe.jpg', price: 15.99 },
+  { id: '2', name: 'ZZ Plant', image: './images/zz-plant.jpg', price: 25.98 },
+  { id: '3', name: 'Monstera Deliciosa', image: './images/monstera.jpg', price: 25.99 },
+]
 
-        const firstPlant = {name: 'foo', image: 'foo_plant_image_url', price: '10'}
-    
-        global.setFetchResponse({...firstPlant, id: "184298qfhquhf92"})
-    
-        fireEvent.change(getByPlaceholderText('Plant name'), { target: { value: firstPlant.name } });
-        fireEvent.change(getByPlaceholderText('Image URL'), { target: { value: firstPlant.image } });
-        fireEvent.change(getByPlaceholderText('Price'), { target: { value: firstPlant.price } });
-        fireEvent.click(getByText('Add to Inventory'))
+beforeEach(() => {
+  global.fetch = jest.fn((url, options) => {
+    if (!options || options.method !== 'POST') {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(basePlants),
+      })
+    }
 
-        expect(fetch).toHaveBeenCalledWith("http://localhost:6001/plants", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: firstPlant.name,
-              image: firstPlant.image,
-              price: Number(firstPlant.price),
-            }),
-        })
-    
-        const newPlant = await findByText('foo');
-        expect(newPlant).toBeInTheDocument();
+    const body = JSON.parse(options.body)
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({ id: '184298qfhquhf92', ...body }),
+    })
+  })
+})
 
-        const secondPlant = {name: 'bar', image: 'bar_plant_image_url', price: '5'}
-    
-        global.setFetchResponse({...secondPlant, id: "3810fqhrquhf9fnqnc0"})
-    
-        fireEvent.change(getByPlaceholderText('Plant name'), { target: { value: secondPlant.name } });
-        fireEvent.change(getByPlaceholderText('Image URL'), { target: { value: secondPlant.image } });
-        fireEvent.change(getByPlaceholderText('Price'), { target: { value: secondPlant.price } });
-        fireEvent.click(getByText('Add to Inventory'))
+afterEach(() => {
+  jest.resetAllMocks()
+})
 
-        expect(fetch).toHaveBeenCalledWith("http://localhost:6001/plants", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: secondPlant.name,
-              image: secondPlant.image,
-              price: Number(secondPlant.price),
-            }),
-        })
+test('adds a new plant when the form is submitted', async () => {
+  render(<App />)
+  await screen.findByText('Aloe')
 
-        const nextPlant = await findByText('bar');
-        expect(nextPlant).toBeInTheDocument();
-    });
+  fireEvent.change(screen.getByPlaceholderText('Plant name'), {
+    target: { value: 'foo' },
+  })
+  fireEvent.change(screen.getByPlaceholderText('Image URL'), {
+    target: { value: 'foo_plant_image_url' },
+  })
+  fireEvent.change(screen.getByPlaceholderText('Price'), {
+    target: { value: '10' },
+  })
+
+  fireEvent.click(screen.getByText('Add Plant')) // match your component
+
+  await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2))
+
+  expect(global.fetch).toHaveBeenLastCalledWith(
+    'http://localhost:6001/plants',
+    expect.objectContaining({
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'foo',
+        image: 'foo_plant_image_url',
+        price: 10,
+      }),
+    }),
+  )
+
+  expect(await screen.findByText('foo')).toBeInTheDocument()
 })

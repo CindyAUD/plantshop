@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-
-// NewPlantForm renders the admin form for adding a plant.
-// On submission it POSTs to the backend, then calls the onAddPlant
-// callback so the parent can update state without a re-fetch.
 function NewPlantForm({ onAddPlant }) {
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
