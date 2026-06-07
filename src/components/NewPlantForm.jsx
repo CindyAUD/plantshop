@@ -61,7 +61,7 @@ function NewPlantForm({ onAddPlant }) {
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
-        <button type="submit">Add to Inventory</button>
+        <button type="submit">Add Plant</button>
       </form>
     </div>
   );
