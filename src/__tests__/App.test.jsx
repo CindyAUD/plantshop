@@ -1,15 +1,4 @@
-/**
- * App.test.js
- *
- * Tests for the Plantsy React application.
- *
- * ⚠️  No @testing-library/jest-dom matchers are used here.
- * All assertions rely on standard Jest (expect, toBe, toContain, etc.)
- * to ensure compatibility with grading environments that do not have
- * jest-dom installed or configured.
- *
- * Fetch is mocked globally so tests never hit a real network.
- */
+
 
 import React from "react";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
