@@ -1,84 +1,41 @@
-import { afterEach } from 'vitest'
+import { afterEach } from '@jest/globals'
 import { cleanup } from '@testing-library/react'
-import '@testing-library/jest-dom/vitest'
-import fetch from 'node-fetch';
+import '@testing-library/jest-dom'
 
-global.fetch = fetch
+const fetchResponseQueue = [];
 
 global.basePlants = [
-    {
-      "id": 1,
-      "name": "Aloe",
-      "image": "./images/aloe.jpg",
-      "price": 15.99
-    },
-    {
-      "id": 2,
-      "name": "ZZ Plant",
-      "image": "./images/zz-plant.jpg",
-      "price": 25.98
-    },
-    {
-      "id": 3,
-      "name": "Pilea peperomioides",
-      "image": "./images/pilea.jpg",
-      "price": 5.99
-    },
-    {
-      "id": 4,
-      "name": "Pothos",
-      "image": "./images/pothos.jpg",
-      "price": 12.11
-    },
-    {
-      "id": 5,
-      "name": "Jade",
-      "image": "./images/jade.jpg",
-      "price": 10.37
-    },
-    {
-      "id": 6,
-      "name": "Monstera Deliciosa",
-      "image": "./images/monstera.jpg",
-      "price": 25.99
-    },
-    {
-      "id": 7,
-      "name": "Fiddle Leaf Fig",
-      "image": "./images/fiddle-leaf-fig.jpg",
-      "price": 55
-    }
-]
+  { id: 1, name: 'Aloe Plant', image: './images/aloe.jpg', price: 15.99 },
+  { id: 2, name: 'ZZ Plant', image: './images/zz-plant.jpg', price: 25.98 },
+  { id: 3, name: 'Peperomia', image: './images/monstera.jpg', price: 25.99 },
+];
 
 global.alternatePlants = [
-    {
-      "id": 1,
-      "name": "Another Aloe",
-      "image": "./images/aloe.jpg",
-      "price": 12.88
-    },
-    {
-      "id": 2,
-      "name": "Another Jade",
-      "image": "./images/jade.jpg",
-      "price": 4.92
-    },
-    {
-      "id": 3,
-      "name": "Another Fiddle Leaf Fig",
-      "image": "./images/fiddle-leaf-fig.jpg",
-      "price": 55
-    }
-]
-  
-global.setFetchResponse = (val) => {
-    global.fetch = vi.fn(() => Promise.resolve({
-        json: () => Promise.resolve(val),
-        ok: true,
-        status: 200
-    }))
+  { id: 4, name: 'Snake Plant', image: './images/snake-plant.jpg', price: 18.5 },
+  { id: 5, name: 'Cactus', image: './images/cactus.jpg', price: 9.99 },
+  { id: 6, name: 'Fiddle Leaf Fig', image: './images/fiddle-leaf-fig.jpg', price: 29.99 },
+];
+
+function buildFetchMock() {
+  return jest.fn(() => {
+    const response = fetchResponseQueue.shift();
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(response),
+    });
+  });
 }
 
+global.setFetchResponse = (response) => {
+  fetchResponseQueue.push(response);
+};
+
+beforeEach(() => {
+  fetchResponseQueue.length = 0;
+  global.fetch = buildFetchMock();
+});
+
 afterEach(() => {
-    cleanup();
-})
+  cleanup();
+  jest.restoreAllMocks();
+});

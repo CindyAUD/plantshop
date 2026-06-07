@@ -1,9 +1,16 @@
 import React from "react";
 import PlantCard from "./PlantCard";
 
-function PlantList() {
+// PlantList maps over the plants array and renders one PlantCard per plant.
+// It receives the already-filtered list from PlantPage so it has no
+// filtering logic of its own.
+function PlantList({ plants }) {
   return (
-    <ul className="cards">{/* render PlantCards components in here */}</ul>
+    <ul className="cards">
+      {plants.map((plant) => (
+        <PlantCard key={plant.id} plant={plant} />
+      ))}
+    </ul>
   );
 }
 

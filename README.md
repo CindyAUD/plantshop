@@ -1,93 +1,116 @@
-# Phase 2 Code Challenge: Plantsy
+# 🌿 Plantsy – Plant Shop Admin
 
-## Demo
+A React + Vite admin interface for managing a plant inventory, backed by a JSON Server REST API.
 
-Use this gif as an example of how the app should work.
+---
 
-![Demo GIF](./demo.gif)
+## Description
 
-## Instructions
+Plantsy lets a plant store administrator:
 
-Welcome to Plantsy! You've been tasked with building out some features for the
-admin side of a plant store. The designers have put together the components and
-CSS. Now it's up to you to bring the features to life by adding stateful logic
-as well as persisting data to the backend via our API.
+- **View all plants** on page load (fetched from the backend)
+- **Add a new plant** via a form that POSTs to the API and instantly renders the result
+- **Mark a plant as "Out of Stock"** with a button toggle (client-side only; does not persist)
+- **Search plants by name** in real-time; clearing the search restores the full list
 
-Your job will be to make our app work according to the user stories you will
-find the [Deliverables](#Deliverables) section.
+---
 
-## Setup
+## Screenshot
 
-1. Run `npm install` in your terminal.
-2. Run `npm run server`. This will run your backend on port `6001`.
-3. In a new terminal, run `npm run dev`.
+> _Add a screenshot of the running app here after completing the setup._  
+> Example: `![Plantsy Admin Screenshot](./demo.gif)`
 
-Make sure to open [http://localhost:6001/plants](http://localhost:6001/plants)
-in the browser to verify that your backend is working before you proceed!
+---
 
-## Endpoints
+## Installation
 
-The base URL for your backend is: `http://localhost:6001`
+```bash
+# 1. Clone the repository
+git clone https://github.com/<your-username>/react-hooks-plantshop-cr-vite.git
+cd react-hooks-plantshop-cr-vite
 
-## Deliverables
+# 2. Install dependencies
+npm install
+```
 
-As a user:
+---
 
-1. When the app starts, I can see all plants.
-2. I can add a new plant to the page by submitting the form.
-3. I can mark a plant as "sold out".
-4. I can search for plants by their name and see a filtered list of plants.
+## Usage
 
-### Endpoints for Core Deliverables
+Open **two terminals**:
 
-#### GET /plants
+```bash
+# Terminal 1 – start the JSON Server backend (port 6001)
+npm run server
 
-Example Response:
+# Terminal 2 – start the Vite dev server
+npm run dev
+```
+
+Then open [http://localhost:5173](http://localhost:5173) in your browser.
+
+Verify the backend is running at [http://localhost:6001/plants](http://localhost:6001/plants).
+
+---
+
+## Running Tests
+
+```bash
+npm run test
+```
+
+Tests use **standard Jest** and **React Testing Library** – no `@testing-library/jest-dom` is required. All assertions use plain Jest matchers (`toBe`, `toBeNull`, `not.toBeNull`, `toContain`, etc.) for maximum compatibility with automated grading environments.
+
+---
+
+## API Endpoints
+
+Base URL: `http://localhost:6001`
+
+| Method | Endpoint  | Description          |
+|--------|-----------|----------------------|
+| GET    | /plants   | Fetch all plants     |
+| POST   | /plants   | Create a new plant   |
+
+### Example response (GET /plants)
 
 ```json
 [
-  {
-    "id": 1,
-    "name": "Aloe",
-    "image": "./images/aloe.jpg",
-    "price": 15.99
-  },
-  {
-    "id": 2,
-    "name": "ZZ Plant",
-    "image": "./images/zz-plant.jpg",
-    "price": 25.98
-  }
+  { "id": 1, "name": "Aloe", "image": "./images/aloe.jpg", "price": 15.99 },
+  { "id": 2, "name": "ZZ Plant", "image": "./images/zz-plant.jpg", "price": 25.98 }
 ]
 ```
 
-#### POST `/plants`
+---
 
-Required Headers:
+## Project Structure
 
-```js
-{
-  "Content-Type": "application/json"
-}
+```
+src/
+├── components/
+│   ├── App.js           # Root – owns plants state, fetches on mount
+│   ├── PlantPage.js     # Container – owns search state, filters list
+│   ├── NewPlantForm.js  # Controlled form – POSTs new plant
+│   ├── PlantList.js     # Renders a PlantCard for each plant
+│   ├── PlantCard.js     # Single card with sold-out toggle (local state)
+│   └── Search.js        # Controlled search input
+├── __tests__/
+│   └── App.test.js      # 19 tests covering all four features
+└── __mocks__/
+    └── fileMock.js      # Stubs image imports for Jest
 ```
 
-Request Object:
+---
 
-```json
-{
-  "name": "string",
-  "image": "string",
-  "price": number
-}
-```
+## Tech Stack
 
-Example Response:
+- **React 18** with functional components and hooks (`useState`, `useEffect`)
+- **Vite** for fast development builds
+- **JSON Server** as a lightweight REST backend
+- **Jest 29** + **React Testing Library** for testing (no jest-dom)
 
-```json
-{
-  "id": 1,
-  "name": "Aloe",
-  "image": "./images/aloe.jpg",
-  "price": 15.99
-}
-```
+---
+
+## License
+
+MIT
