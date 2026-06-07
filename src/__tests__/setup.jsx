@@ -15,7 +15,7 @@ global.alternatePlants = [
 ]
 
 global.setFetchResponse = (plants = global.basePlants) => {
-  global.fetch = jest.fn((url, options) => {
+  global.fetch = (url, options) => {
     if (!options || options.method !== "POST") {
       return Promise.resolve({
         ok: true,
@@ -27,7 +27,7 @@ global.setFetchResponse = (plants = global.basePlants) => {
       ok: true,
       json: () => Promise.resolve({ id: Date.now(), ...body }),
     })
-  })
+  }
 }
 
 beforeEach(() => {
